@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Selfie Capture</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- MediaPipe dependencies via ES module in script.js -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <div class="camera-wrapper">
+            <video id="videoElement" autoplay playsinline></video>
+            <canvas id="outputCanvas"></canvas>
+            
+            <div id="overlayElements" class="overlay-elements">
+                <!-- Status Box -->
+                <div id="statusBox" class="status-box">
+                    <h2 id="statusTitle">Memuat AI...</h2>
+                    <p id="statusMessage">Harap tunggu sebentar</p>
+                </div>
+                
+                <!-- Bounding Box / Guidance Frame -->
+                <div id="faceGuide" class="face-guide">
+                    <div class="corner top-left"></div>
+                    <div class="corner top-right"></div>
+                    <div class="corner bottom-left"></div>
+                    <div class="corner bottom-right"></div>
+                </div>
+
+                <!-- Requirement Badges -->
+                <div class="requirements">
+                    <div id="reqLighting" class="badge">☀️ Cahaya Cukup</div>
+                    <div id="reqFill" class="badge">📱 Muka Memenuhi Layar</div>
+                    <div id="reqStraight" class="badge">👤 Wajah Lurus</div>
+                </div>
+
+                <!-- Countdown Animation Container -->
+                <div id="countdownContainer" class="countdown-container hidden">
+                    <div class="ring"></div>
+                    <div id="countdownNumber" class="number">3</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Modal -->
+        <div id="resultModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Selfie Berhasil Disimpan!</h2>
+                <p>Gambar Anda sudah diamankan di server kami.</p>
+                <img id="resultImage" src="" alt="Result" />
+                <button id="retryBtn" class="btn">Ambil Ulang</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script loading -->
+    <!-- We will use modules for mediapipe tasks -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>

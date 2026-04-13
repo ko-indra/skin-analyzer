@@ -1,0 +1,284 @@
+:root {
+    --primary: #4F46E5;
+    --success: #10B981;
+    --error: #EF4444;
+    --bg-dark: #111827;
+    --text-light: #F9FAFB;
+    --glass-bg: rgba(17, 24, 39, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 500px;
+    height: 100dvh;
+    position: relative;
+    background-color: #000;
+}
+
+.camera-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1); /* Mirror effect */    
+}
+
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    z-index: 5;
+    transform: scaleX(-1); /* Align canvas with mirrored video */
+}
+
+.overlay-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem 1.5rem;
+    pointer-events: none;
+}
+
+/* Status Box Glassmorphism */
+.status-box {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.status-box h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    transition: color 0.3s ease;
+}
+
+.status-box p {
+    font-size: 0.95rem;
+    opacity: 0.8;
+}
+
+/* Tracking States */
+.state-error h2 { color: var(--error); }
+.state-success h2 { color: var(--success); }
+
+/* Face Guide (Corners) */
+.face-guide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 65%;
+    aspect-ratio: 3/4;
+    transition: all 0.3s ease;
+    opacity: 0.5;
+}
+
+.face-guide .corner {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border-color: white;
+    border-style: solid;
+    transition: border-color 0.3s ease;
+}
+
+.face-guide.aligned .corner {
+    border-color: var(--success);
+    opacity: 1;
+}
+
+.corner.top-left { top: 0; left: 0; border-width: 4px 0 0 4px; border-top-left-radius: 20px; }
+.corner.top-right { top: 0; right: 0; border-width: 4px 4px 0 0; border-top-right-radius: 20px; }
+.corner.bottom-left { bottom: 0; left: 0; border-width: 0 0 4px 4px; border-bottom-left-radius: 20px; }
+.corner.bottom-right { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-bottom-right-radius: 20px; }
+
+/* Requirements Badges */
+.requirements {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 12%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 95%;
+    pointer-events: none;
+}
+
+.badge {
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    border: 1px solid var(--glass-border);
+    padding: 0.35rem 0.7rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.badge.met {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: var(--success);
+}
+
+/* Countdown Animation */
+.countdown-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+.countdown-container.hidden {
+    display: none;
+}
+
+.number {
+    font-size: 8rem;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    animation: popIn 1s infinite alternate;
+}
+
+.ring {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 6px solid transparent;
+    border-top-color: var(--success);
+    border-bottom-color: var(--success);
+    animation: spin 1.5s linear infinite;
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+}
+
+/* Modal */
+.modal {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(10px);
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    pointer-events: auto; /* Allow clicking inside modal */
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #1F2937;
+    padding: 2rem;
+    border-radius: 20px;
+    text-align: center;
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.modal-content img {
+    width: 100%;
+    border-radius: 12px;
+    margin: 1.5rem 0;
+    transform: scaleX(-1); /* keep mirror for display */
+}
+
+.btn {
+    background: linear-gradient(135deg, var(--primary), #818CF8);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.btn:active {
+    transform: scale(0.96);
+}
+
+/* Animations */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes popIn {
+    0% { transform: scale(0.8); opacity: 0.8; }
+    100% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Flash effect for capture */
+.flash {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: white;
+    z-index: 100;
+    pointer-events: none;
+    animation: flashAnim 0.8s ease-out;
+}
+
+@keyframes flashAnim {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
