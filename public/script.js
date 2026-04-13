@@ -42,7 +42,7 @@ let isReady = false; // Whether ready animation is showing
 
 // Thresholds
 const MIN_BRIGHTNESS = 60; // 0-255 scale
-const MIN_FACE_WIDTH_RATIO = 0.32; // Face landmark width must be at least 32% of video width
+const MIN_FACE_WIDTH_RATIO = 0.70; // Face landmark width must be at least 70% of video width
 const MIN_FACE_HEIGHT_RATIO = 0.38; // Face landmark height must be at least 38% of video height
 const MAX_ROTATION_Y = 0.25; // Yaw limit (radians)
 const MAX_ROTATION_X = 0.25; // Pitch limit (radians)
