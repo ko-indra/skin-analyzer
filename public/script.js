@@ -37,11 +37,13 @@ let isSuccess = false;
 let scanLineY = 0; // For scanning line animation
 let scanDirection = 1;
 let scanTime = 0; // For pulsing effects
+let readyTimeout = null; // Delay before countdown
+let isReady = false; // Whether ready animation is showing
 
 // Thresholds
 const MIN_BRIGHTNESS = 60; // 0-255 scale
-const MIN_FACE_WIDTH_RATIO = 0.25; // Face landmark width must be at least 25% of video width
-const MIN_FACE_HEIGHT_RATIO = 0.30; // Face landmark height must be at least 30% of video height
+const MIN_FACE_WIDTH_RATIO = 0.32; // Face landmark width must be at least 32% of video width
+const MIN_FACE_HEIGHT_RATIO = 0.38; // Face landmark height must be at least 38% of video height
 const MAX_ROTATION_Y = 0.25; // Yaw limit (radians)
 const MAX_ROTATION_X = 0.25; // Pitch limit (radians)
 const MAX_CENTER_OFFSET = 0.15; // Face center must be within 15% of screen center
@@ -407,14 +409,27 @@ async function predictWebcam() {
         
         const criteriaMet = checkConditions(metrics);
 
-        if (criteriaMet && !isCapturing && !countdownInterval) {
+        if (criteriaMet && !isCapturing && !countdownInterval && !readyTimeout) {
             updateStatus("Sempurna!", "Tahan posisi Anda...", true);
             faceGuide.classList.add('aligned');
-            startCountdown();
+            isReady = true;
+            // Show ready animation, wait 1 second, then start countdown
+            showReadyAnimation();
+            readyTimeout = setTimeout(() => {
+                if (isReady) {
+                    startCountdown();
+                }
+            }, 1000);
         } else if (!criteriaMet) {
             faceGuide.classList.remove('aligned');
             if (!isCapturing && countdownInterval) {
                 cancelCountdown();
+            }
+            if (readyTimeout) {
+                clearTimeout(readyTimeout);
+                readyTimeout = null;
+                isReady = false;
+                hideReadyAnimation();
             }
             if (!metrics) {
                 // message handled in checkConditions
@@ -428,6 +443,8 @@ async function predictWebcam() {
 }
 
 function startCountdown() {
+    isReady = false;
+    hideReadyAnimation();
     countdownValue = 3;
     countdownNumber.innerText = countdownValue;
     countdownContainer.classList.remove("hidden");
@@ -452,6 +469,16 @@ function cancelCountdown() {
     clearInterval(countdownInterval);
     countdownInterval = null;
     countdownContainer.classList.add("hidden");
+}
+
+function showReadyAnimation() {
+    const el = document.getElementById('readyOverlay');
+    if (el) el.classList.remove('hidden');
+}
+
+function hideReadyAnimation() {
+    const el = document.getElementById('readyOverlay');
+    if (el) el.classList.add('hidden');
 }
 
 function captureImage() {

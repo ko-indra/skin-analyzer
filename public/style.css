@@ -447,3 +447,73 @@ canvas {
     0% { opacity: 1; }
     100% { opacity: 0; }
 }
+
+/* ==================== READY ANIMATION ==================== */
+.ready-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 18;
+    gap: 1rem;
+    animation: readyPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ready-circle {
+    width: 100px;
+    height: 100px;
+}
+
+.ready-check {
+    width: 100px;
+    height: 100px;
+    filter: drop-shadow(0 0 15px rgba(16, 185, 129, 0.6));
+}
+
+.ready-check-circle {
+    stroke: var(--success);
+    stroke-width: 2.5;
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: drawCircle 0.6s ease-out forwards;
+}
+
+.ready-check-path {
+    stroke: var(--success);
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: drawCheck 0.3s 0.4s ease-out forwards;
+}
+
+.ready-text {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--success);
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+    animation: readyTextFade 0.3s 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+@keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes drawCheck {
+    to { stroke-dashoffset: 0; }
+}
+
+@keyframes readyPop {
+    0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+@keyframes readyTextFade {
+    to { opacity: 1; }
+}
