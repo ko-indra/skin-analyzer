@@ -1,6 +1,11 @@
 import { FaceLandmarker, FilesetResolver } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/+esm";
 
-// DOM Elements
+// DOM Elements — Screens
+const welcomeScreen = document.getElementById("welcomeScreen");
+const cameraScreen = document.getElementById("cameraScreen");
+const startBtn = document.getElementById("startBtn");
+
+// DOM Elements — Camera
 const video = document.getElementById("videoElement");
 const canvas = document.getElementById("outputCanvas");
 const ctx = canvas.getContext("2d");
@@ -41,6 +46,10 @@ const MAX_ROTATION_Y = 0.25; // Yaw limit (radians)
 const MAX_ROTATION_X = 0.25; // Pitch limit (radians)
 
 async function init() {
+    // Switch screens
+    welcomeScreen.classList.add('hidden');
+    cameraScreen.classList.remove('hidden');
+
     try {
         statusTitle.innerText = "Memuat AI...";
         statusMessage.innerText = "Harap tunggu sebentar, menginisialisasi model...";
@@ -531,5 +540,5 @@ function showError(title, message) {
     statusBox.classList.remove('state-success');
 }
 
-// Initialize application
-window.addEventListener('DOMContentLoaded', init);
+// Start button click handler
+startBtn.addEventListener('click', init);

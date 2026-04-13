@@ -1,8 +1,11 @@
 :root {
     --primary: #4F46E5;
+    --accent: #00DCF0;
+    --accent-green: #00E0C0;
     --success: #10B981;
     --error: #EF4444;
-    --bg-dark: #111827;
+    --bg-dark: #0A0F1C;
+    --bg-card: #111827;
     --text-light: #F9FAFB;
     --glass-bg: rgba(17, 24, 39, 0.4);
     --glass-border: rgba(255, 255, 255, 0.1);
@@ -30,7 +33,168 @@ body {
     max-width: 500px;
     height: 100dvh;
     position: relative;
+    background-color: var(--bg-dark);
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ==================== WELCOME SCREEN ==================== */
+.welcome-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem 2rem;
+    background: radial-gradient(ellipse at 50% 20%, rgba(0, 220, 240, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(79, 70, 229, 0.06) 0%, transparent 50%),
+                var(--bg-dark);
+    animation: fadeIn 0.6s ease-out;
+}
+
+.welcome-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+/* Brand Logo */
+.brand-logo {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.logo-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+.brand-name {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.02em;
+}
+
+.brand-sub {
+    font-size: 0.95rem;
+    font-weight: 300;
+    opacity: 0.6;
+}
+
+.brand-sub a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    opacity: 1;
+}
+
+.brand-sub a:hover {
+    text-decoration: underline;
+}
+
+/* Welcome Info */
+.welcome-info {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.tagline {
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.6;
+    opacity: 0.75;
+    max-width: 340px;
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 0.85rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.8);
+    transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(0, 220, 240, 0.2);
+}
+
+.feature-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+/* Start Button */
+.btn-start {
+    background: linear-gradient(135deg, var(--accent), var(--accent-green));
+    color: #0A0F1C;
+    font-size: 1.15rem;
+    font-weight: 800;
+    padding: 1.1rem 2rem;
+    border-radius: 16px;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    width: 100%;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 25px rgba(0, 220, 240, 0.25);
+}
+
+.btn-start:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 35px rgba(0, 220, 240, 0.35);
+}
+
+.btn-start:active {
+    transform: scale(0.97);
+}
+
+.btn-icon {
+    font-size: 1.3rem;
+}
+
+.disclaimer {
+    font-size: 0.72rem;
+    opacity: 0.35;
+    text-align: center;
+    margin-top: -1rem;
+}
+
+/* ==================== CAMERA SCREEN ==================== */
+.camera-screen {
+    width: 100%;
+    height: 100%;
+    position: relative;
     background-color: #000;
+    animation: fadeIn 0.4s ease-out;
 }
 
 .camera-wrapper {
@@ -44,7 +208,7 @@ video {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scaleX(-1); /* Mirror effect */    
+    transform: scaleX(-1);
 }
 
 canvas {
@@ -56,7 +220,7 @@ canvas {
     object-fit: cover;
     pointer-events: none;
     z-index: 5;
-    transform: scaleX(-1); /* Align canvas with mirrored video */
+    transform: scaleX(-1);
 }
 
 .overlay-elements {
@@ -80,20 +244,20 @@ canvas {
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--glass-border);
     border-radius: 16px;
-    padding: 1.5rem;
+    padding: 1.2rem;
     text-align: center;
     transition: all 0.3s ease;
 }
 
 .status-box h2 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 800;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     transition: color 0.3s ease;
 }
 
 .status-box p {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     opacity: 0.8;
 }
 
@@ -181,10 +345,6 @@ canvas {
     z-index: 20;
 }
 
-.countdown-container.hidden {
-    display: none;
-}
-
 .number {
     font-size: 8rem;
     font-weight: 800;
@@ -216,11 +376,7 @@ canvas {
     justify-content: center;
     align-items: center;
     padding: 2rem;
-    pointer-events: auto; /* Allow clicking inside modal */
-}
-
-.modal.hidden {
-    display: none;
+    pointer-events: auto;
 }
 
 .modal-content {
@@ -236,7 +392,7 @@ canvas {
     width: 100%;
     border-radius: 12px;
     margin: 1.5rem 0;
-    transform: scaleX(-1); /* keep mirror for display */
+    transform: scaleX(-1);
 }
 
 .btn {
@@ -267,6 +423,16 @@ canvas {
     100% { transform: scale(1.1); opacity: 1; }
 }
 
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+}
+
 /* Flash effect for capture */
 .flash {
     position: absolute;
@@ -281,4 +447,3 @@ canvas {
     0% { opacity: 1; }
     100% { opacity: 0; }
 }
-
