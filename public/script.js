@@ -40,10 +40,11 @@ let scanTime = 0; // For pulsing effects
 
 // Thresholds
 const MIN_BRIGHTNESS = 60; // 0-255 scale
-const MIN_FACE_WIDTH_RATIO = 0.18; // Face landmark width should be at least 18% of video width
-const MIN_FACE_HEIGHT_RATIO = 0.25; // Face landmark height should be at least 25% of video height
+const MIN_FACE_WIDTH_RATIO = 0.25; // Face landmark width must be at least 25% of video width
+const MIN_FACE_HEIGHT_RATIO = 0.30; // Face landmark height must be at least 30% of video height
 const MAX_ROTATION_Y = 0.25; // Yaw limit (radians)
 const MAX_ROTATION_X = 0.25; // Pitch limit (radians)
+const MAX_CENTER_OFFSET = 0.15; // Face center must be within 15% of screen center
 
 async function init() {
     // Switch screens
@@ -122,7 +123,7 @@ function calculateBrightness() {
         colorSum += avg;
     }
 
-    const brightness = Math.floor(colorSum / (video.videoWidth * video.videoHeight / (video.videoWidth/64 * video.videoHeight/64)));
+    const brightness = Math.floor(colorSum / (64 * 64));
     return brightness;
 }
 
@@ -144,25 +145,36 @@ function checkConditions(metrics) {
     if (!metrics) {
         reqFill.classList.remove('met');
         reqStraight.classList.remove('met');
+        reqFill.innerText = "📱 Wajah Tidak Terdeteksi";
+        reqStraight.innerText = "👤 Wajah Lurus";
         updateStatus("Tidak ada wajah", "Harap tampilkan wajah Anda ke layar", false);
         return false;
     }
 
     const { boundingBox, transformationMatrix } = metrics;
     
-    // 2. Face Fills Screen — check both width and height ratios
+    // 2. Face Fills Screen AND is Centered in the guide box
     const faceWidthRatio = boundingBox.width / canvas.width;
     const faceHeightRatio = boundingBox.height / canvas.height;
-    console.log(`Face ratio — W: ${faceWidthRatio.toFixed(3)}, H: ${faceHeightRatio.toFixed(3)} | Canvas: ${canvas.width}x${canvas.height}`);
     
-    if (faceWidthRatio >= MIN_FACE_WIDTH_RATIO && faceHeightRatio >= MIN_FACE_HEIGHT_RATIO) {
+    // Check if face center is near screen center
+    const faceCenterX = (boundingBox.x + boundingBox.width / 2) / canvas.width;
+    const faceCenterY = (boundingBox.y + boundingBox.height / 2) / canvas.height;
+    const offsetX = Math.abs(faceCenterX - 0.5);
+    const offsetY = Math.abs(faceCenterY - 0.5);
+    const isCentered = offsetX < MAX_CENTER_OFFSET && offsetY < MAX_CENTER_OFFSET;
+    const isBigEnough = faceWidthRatio >= MIN_FACE_WIDTH_RATIO && faceHeightRatio >= MIN_FACE_HEIGHT_RATIO;
+    
+    if (isBigEnough && isCentered) {
         reqFill.classList.add('met');
-        reqFill.innerText = "📱 Muka Memenuhi Layar ✓";
+        reqFill.innerText = "📱 Posisi Pas ✓";
+    } else if (!isBigEnough) {
+        reqFill.classList.remove('met');
+        reqFill.innerText = "📱 Mendekat ke Kamera";
+        allPassed = false;
     } else {
         reqFill.classList.remove('met');
-        if (faceWidthRatio < MIN_FACE_WIDTH_RATIO || faceHeightRatio < MIN_FACE_HEIGHT_RATIO) {
-            reqFill.innerText = "📱 Mendekat ke Kamera";
-        }
+        reqFill.innerText = "📱 Posisikan di Tengah";
         allPassed = false;
     }
 
