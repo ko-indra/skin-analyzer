@@ -516,7 +516,16 @@ function captureImage() {
         },
         body: JSON.stringify({ image: dataURL })
     })
-    .then(response => response.json().then(data => ({ ok: response.ok, data })))
+    .then(async response => {
+        const text = await response.text();
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (e) {
+            throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
+        }
+        return { ok: response.ok, data };
+    })
     .then(({ ok, data }) => {
         if (ok && data.success) {
             showResult(dataURL);
@@ -526,7 +535,7 @@ function captureImage() {
     })
     .catch(error => {
         console.error("Error sending image:", error);
-        showError("Gagal mengirim ke Telegram", "Silakan coba lagi.");
+        showError("Gagal mengirim", error.message || "Silakan coba lagi.");
         isCapturing = false;
         isSuccess = false;
     });
