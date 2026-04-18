@@ -412,6 +412,31 @@ canvas {
     transform: scale(0.96);
 }
 
+.btn-instant {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    padding: 0.8rem 1.5rem;
+    background: linear-gradient(135deg, #FF3B30, #FF5C50);
+    z-index: 30;
+    font-size: 1rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4);
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.btn-instant:hover {
+    transform: translateX(-50%) translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 59, 48, 0.5);
+}
+
+.btn-instant:active {
+    transform: translateX(-50%) scale(0.96);
+}
+
 /* Animations */
 @keyframes spin {
     0% { transform: rotate(0deg); }

@@ -25,6 +25,7 @@ const countdownNumber = document.getElementById("countdownNumber");
 const resultModal = document.getElementById("resultModal");
 const resultImage = document.getElementById("resultImage");
 const retryBtn = document.getElementById("retryBtn");
+const instantCaptureBtn = document.getElementById("instantCaptureBtn");
 
 // State
 let faceLandmarker;
@@ -569,3 +570,17 @@ function showError(title, message) {
 
 // Start button click handler
 startBtn.addEventListener('click', init);
+
+// Instant capture button handler
+instantCaptureBtn.addEventListener('click', () => {
+    if (!isCapturing && !isSuccess) {
+        if (countdownInterval) cancelCountdown();
+        if (readyTimeout) {
+            clearTimeout(readyTimeout);
+            readyTimeout = null;
+            isReady = false;
+            hideReadyAnimation();
+        }
+        captureImage();
+    }
+});
