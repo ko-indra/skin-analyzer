@@ -1,11 +1,5 @@
 {
   "version": 2,
-  "functions": {
-    "api/**/*.js": {
-      "maxDuration": 30,
-      "includeFiles": "lib/**"
-    }
-  },
   "builds": [
     {
       "src": "public/**",
@@ -14,7 +8,10 @@
     {
       "src": "api/**/*.js",
       "use": "@vercel/node",
-      "config": { "includeFiles": "lib/**" }
+      "config": {
+        "includeFiles": "lib/**",
+        "maxDuration": 30
+      }
     }
   ],
   "routes": [
