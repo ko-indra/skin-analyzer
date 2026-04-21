@@ -1,5 +1,11 @@
 {
   "version": 2,
+  "functions": {
+    "api/**/*.js": {
+      "maxDuration": 30,
+      "includeFiles": "lib/**"
+    }
+  },
   "builds": [
     {
       "src": "public/**",

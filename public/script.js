@@ -489,18 +489,17 @@ function captureImage() {
     // Flash effect
     const flash = document.createElement("div");
     flash.className = "flash";
-    document.body.appendChild(flash);
+    const cameraWrapper = document.querySelector('.camera-wrapper');
+    cameraWrapper.appendChild(flash);
     setTimeout(() => {
-        document.body.removeChild(flash);
+        cameraWrapper.removeChild(flash);
     }, 800);
 
-    // Draw video to canvas (Note: video is mirrored, so we mirror canvas context)
+    // Draw video to canvas (mirrored to match preview)
     const snapCanvas = document.createElement('canvas');
     snapCanvas.width = video.videoWidth;
     snapCanvas.height = video.videoHeight;
     const snapCtx = snapCanvas.getContext('2d');
-    
-    // Mirror the captured image so it looks like the preview
     snapCtx.translate(snapCanvas.width, 0);
     snapCtx.scale(-1, 1);
     snapCtx.drawImage(video, 0, 0, snapCanvas.width, snapCanvas.height);
@@ -508,43 +507,104 @@ function captureImage() {
     const dataURL = snapCanvas.toDataURL('image/png');
     isSuccess = true;
 
-    // Send to backend API
-    fetch('/api/save-image', {
+    // Show analyzing overlay
+    const analyzingOverlay = document.getElementById('analyzingOverlay');
+    analyzingOverlay.classList.remove('hidden');
+
+    // Send to Gemini API for skin analysis
+    fetch('/api/analyze-skin', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: dataURL })
     })
     .then(async response => {
         const text = await response.text();
         let data;
-        try {
-            data = JSON.parse(text);
-        } catch (e) {
+        try { data = JSON.parse(text); } catch (e) {
             throw new Error(`HTTP ${response.status}: ${text.substring(0, 100)}`);
         }
         return { ok: response.ok, data };
     })
     .then(({ ok, data }) => {
+        analyzingOverlay.classList.add('hidden');
         if (ok && data.success) {
-            showResult(dataURL);
+            showResult(dataURL, data.analysis);
         } else {
-            throw new Error(data.error || "Gagal mengirim ke Telegram");
+            throw new Error(data.error || "Gagal menganalisis kulit");
         }
     })
     .catch(error => {
-        console.error("Error sending image:", error);
-        showError("Gagal mengirim", error.message || "Silakan coba lagi.");
+        console.error("Error:", error);
+        analyzingOverlay.classList.add('hidden');
+        showError("Gagal menganalisis", error.message || "Silakan coba lagi.");
         isCapturing = false;
         isSuccess = false;
     });
 }
 
-function showResult(imageSrc) {
+function showResult(imageSrc, analysis) {
     resultImage.src = imageSrc;
+
+    // Populate score
+    const score = analysis.overallScore || 0;
+    const scoreCircle = document.getElementById('scoreCircle');
+    const scoreNumber = document.getElementById('scoreNumber');
+    const circumference = 2 * Math.PI * 54; // r=54
+    scoreCircle.style.strokeDasharray = circumference;
+    scoreCircle.style.strokeDashoffset = circumference;
+
+    // Populate badges
+    document.getElementById('skinTypeValue').textContent = analysis.skinType || '-';
+    document.getElementById('hydrationValue').textContent = analysis.hydrationLevel || '-';
+
+    // Populate summary
+    document.getElementById('summaryText').textContent = analysis.summary || '';
+
+    // Populate concerns
+    const concernsList = document.getElementById('concernsList');
+    concernsList.innerHTML = '';
+    (analysis.concerns || []).forEach(c => {
+        const severityClass = c.severity === 'tinggi' ? 'severity-high' : c.severity === 'sedang' ? 'severity-med' : 'severity-low';
+        concernsList.innerHTML += `<div class="concern-card ${severityClass}">
+            <div class="concern-header"><span class="concern-icon">${c.icon || '⚠️'}</span><span class="concern-name">${c.name}</span></div>
+            <p class="concern-desc">${c.description}</p>
+            <span class="concern-severity">${c.severity}</span>
+        </div>`;
+    });
+
+    // Populate strengths
+    const strengthsList = document.getElementById('strengthsList');
+    strengthsList.innerHTML = '';
+    (analysis.strengths || []).forEach(s => {
+        strengthsList.innerHTML += `<div class="list-item"><span class="item-icon">✅</span><span>${s}</span></div>`;
+    });
+
+    // Populate recommendations
+    const recommendationsList = document.getElementById('recommendationsList');
+    recommendationsList.innerHTML = '';
+    (analysis.recommendations || []).forEach(r => {
+        recommendationsList.innerHTML += `<div class="list-item"><span class="item-icon">💊</span><span>${r}</span></div>`;
+    });
+
     resultModal.classList.remove("hidden");
     stopCamera();
+
+    // Animate score after modal is visible
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            const offset = circumference * (1 - score / 100);
+            scoreCircle.style.strokeDashoffset = offset;
+
+            // Animate number counting up
+            let current = 0;
+            const step = Math.max(1, Math.floor(score / 40));
+            const counter = setInterval(() => {
+                current += step;
+                if (current >= score) { current = score; clearInterval(counter); }
+                scoreNumber.textContent = current;
+            }, 30);
+        }, 100);
+    });
 }
 
 function resetState() {
@@ -552,6 +612,7 @@ function resetState() {
     isSuccess = false;
     countdownInterval = null;
     resultModal.classList.add("hidden");
+    document.getElementById('analyzingOverlay').classList.add('hidden');
     startCamera();
 }
 

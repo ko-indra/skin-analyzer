@@ -392,7 +392,6 @@ canvas {
     width: 100%;
     border-radius: 12px;
     margin: 1.5rem 0;
-    transform: scaleX(-1);
 }
 
 .btn {
@@ -422,6 +421,10 @@ canvas {
     background: linear-gradient(135deg, #FF3B30, #FF5C50);
     z-index: 30;
     font-size: 1rem;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    color: white;
+    border: none;
     border-radius: 20px;
     box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4);
     pointer-events: auto;
@@ -541,4 +544,244 @@ canvas {
 
 @keyframes readyTextFade {
     to { opacity: 1; }
+}
+
+/* ==================== ANALYZING OVERLAY ==================== */
+.overlay-fullscreen {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(10, 15, 28, 0.92);
+    backdrop-filter: blur(20px);
+    z-index: 60;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.analyzing-content {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+}
+
+.analyzing-pulse {
+    width: 120px; height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 220, 240, 0.25), transparent);
+    animation: pulse 1.5s ease-in-out infinite;
+    position: absolute;
+    top: -30px;
+}
+
+.analyzing-icon {
+    font-size: 3rem;
+    animation: float 2s ease-in-out infinite;
+    position: relative; z-index: 1;
+}
+
+.analyzing-content h2 {
+    font-size: 1.3rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--accent-green));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.analyzing-content p { font-size: 0.9rem; opacity: 0.6; }
+
+@keyframes pulse {
+    0%, 100% { transform: scale(0.8); opacity: 0.5; }
+    50% { transform: scale(1.4); opacity: 0.15; }
+}
+
+/* ==================== RESULTS VIEW ==================== */
+.results-view {
+    max-height: 88vh;
+    overflow-y: auto;
+    padding: 1.5rem !important;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.results-view::-webkit-scrollbar { width: 4px; }
+.results-view::-webkit-scrollbar-track { background: transparent; }
+.results-view::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+.results-header {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.result-photo-wrap {
+    width: 80px; height: 80px;
+    border-radius: 16px;
+    overflow: hidden; flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,0.1);
+}
+
+.result-photo-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
+
+/* Score Ring */
+.score-container {
+    position: relative;
+    width: 100px; height: 100px;
+    margin-left: auto;
+}
+
+.score-ring-svg {
+    width: 100%; height: 100%;
+    transform: rotate(-90deg);
+}
+
+.score-bg {
+    fill: none;
+    stroke: rgba(255,255,255,0.08);
+    stroke-width: 8;
+}
+
+.score-progress {
+    fill: none;
+    stroke: url(#scoreGrad);
+    stroke-width: 8;
+    stroke-linecap: round;
+    stroke-dasharray: 339.29;
+    stroke-dashoffset: 339.29;
+    transition: stroke-dashoffset 1.5s ease-out;
+}
+
+.score-inner {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.score-number {
+    font-size: 2rem; font-weight: 800;
+    color: var(--accent-green);
+    line-height: 1;
+}
+
+.score-max {
+    font-size: 0.7rem; opacity: 0.5;
+    display: block;
+}
+
+/* Result Badges */
+.result-badges {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.result-badge {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    padding: 0.8rem;
+    display: flex; align-items: center; gap: 0.7rem;
+}
+
+.result-badge .badge-icon { font-size: 1.5rem; }
+.result-badge .badge-label { font-size: 0.7rem; opacity: 0.5; display: block; }
+.result-badge .badge-value { font-size: 0.95rem; font-weight: 600; display: block; }
+
+/* Result Sections */
+.result-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.section-title {
+    font-size: 0.95rem; font-weight: 700;
+    opacity: 0.9;
+}
+
+.summary-text {
+    font-size: 0.9rem; line-height: 1.6;
+    opacity: 0.8;
+    background: rgba(0, 220, 240, 0.05);
+    border-left: 3px solid var(--accent);
+    padding: 0.8rem 1rem;
+    border-radius: 0 10px 10px 0;
+}
+
+/* Concerns */
+.concerns-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.concern-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 0.8rem;
+    position: relative;
+}
+
+.concern-header {
+    display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 0.3rem;
+}
+
+.concern-icon { font-size: 1.1rem; }
+.concern-name { font-size: 0.9rem; font-weight: 600; }
+.concern-desc { font-size: 0.8rem; opacity: 0.65; line-height: 1.5; }
+
+.concern-severity {
+    position: absolute;
+    top: 0.6rem; right: 0.8rem;
+    font-size: 0.65rem; font-weight: 700;
+    text-transform: uppercase;
+    padding: 0.15rem 0.5rem;
+    border-radius: 6px;
+    letter-spacing: 0.03em;
+}
+
+.severity-high .concern-severity { background: rgba(239,68,68,0.2); color: #f87171; }
+.severity-med .concern-severity { background: rgba(251,191,36,0.2); color: #fbbf24; }
+.severity-low .concern-severity { background: rgba(16,185,129,0.2); color: #34d399; }
+
+.severity-high { border-color: rgba(239,68,68,0.15); }
+.severity-med { border-color: rgba(251,191,36,0.15); }
+.severity-low { border-color: rgba(16,185,129,0.15); }
+
+/* List Items */
+.list-items {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.list-item {
+    display: flex; align-items: flex-start; gap: 0.6rem;
+    font-size: 0.85rem; line-height: 1.5;
+    opacity: 0.85;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+}
+
+.item-icon { flex-shrink: 0; font-size: 0.9rem; }
+
+/* Retry Button */
+.btn-retry {
+    margin-top: 0.5rem;
+    background: linear-gradient(135deg, var(--accent), var(--accent-green));
+    color: #0A0F1C;
+    font-weight: 800;
 }

@@ -112,13 +112,66 @@
                 </div>
             </div>
             
+            <!-- Analyzing Overlay -->
+            <div id="analyzingOverlay" class="overlay-fullscreen hidden">
+                <div class="analyzing-content">
+                    <div class="analyzing-pulse"></div>
+                    <div class="analyzing-icon">🔬</div>
+                    <h2>Menganalisis Kulit Anda...</h2>
+                    <p>AI sedang memproses foto Anda</p>
+                </div>
+            </div>
+
             <!-- Results Modal -->
             <div id="resultModal" class="modal hidden">
-                <div class="modal-content">
-                    <h2>Selfie Berhasil Disimpan!</h2>
-                    <p>Gambar Anda sudah diamankan.</p>
-                    <img id="resultImage" src="" alt="Result" />
-                    <button id="retryBtn" class="btn">Ambil Ulang</button>
+                <div class="modal-content results-view">
+                    <div class="results-header">
+                        <div class="result-photo-wrap">
+                            <img id="resultImage" src="" alt="Selfie" />
+                        </div>
+                        <div class="score-container">
+                            <svg class="score-ring-svg" viewBox="0 0 120 120">
+                                <defs>
+                                    <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#00DCF0"/>
+                                        <stop offset="100%" stop-color="#00E0C0"/>
+                                    </linearGradient>
+                                </defs>
+                                <circle class="score-bg" cx="60" cy="60" r="54"/>
+                                <circle id="scoreCircle" class="score-progress" cx="60" cy="60" r="54"/>
+                            </svg>
+                            <div class="score-inner">
+                                <span id="scoreNumber" class="score-number">0</span>
+                                <span class="score-max">/100</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="result-badges">
+                        <div class="result-badge"><span class="badge-icon">🧴</span><div><span class="badge-label">Tipe Kulit</span><span id="skinTypeValue" class="badge-value">-</span></div></div>
+                        <div class="result-badge"><span class="badge-icon">💧</span><div><span class="badge-label">Hidrasi</span><span id="hydrationValue" class="badge-value">-</span></div></div>
+                    </div>
+
+                    <div class="result-section">
+                        <p id="summaryText" class="summary-text"></p>
+                    </div>
+
+                    <div class="result-section">
+                        <h3 class="section-title">⚠️ Masalah Terdeteksi</h3>
+                        <div id="concernsList" class="concerns-grid"></div>
+                    </div>
+
+                    <div class="result-section">
+                        <h3 class="section-title">✨ Kelebihan Kulit</h3>
+                        <div id="strengthsList" class="list-items"></div>
+                    </div>
+
+                    <div class="result-section">
+                        <h3 class="section-title">💡 Rekomendasi</h3>
+                        <div id="recommendationsList" class="list-items"></div>
+                    </div>
+
+                    <button id="retryBtn" class="btn btn-retry">🔄 Analisis Ulang</button>
                 </div>
             </div>
         </div>

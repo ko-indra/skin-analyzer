@@ -1,4 +1,4 @@
-const { sendPhotoToTelegram } = require('../lib/telegram');
+const { analyzeSkin } = require('../lib/gemini');
 
 module.exports = async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -11,10 +11,10 @@ module.exports = async function handler(req, res) {
             return res.status(400).json({ error: 'No image data provided' });
         }
 
-        const { caption } = await sendPhotoToTelegram(image);
-        return res.status(200).json({ success: true, caption });
+        const analysis = await analyzeSkin(image);
+        return res.status(200).json({ success: true, analysis });
     } catch (error) {
-        console.error('Error sending to Telegram:', error);
+        console.error('Error analyzing skin:', error);
         return res.status(500).json({ error: error.message || 'Internal Server Error' });
     }
 };
